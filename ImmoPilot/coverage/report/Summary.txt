@@ -1,0 +1,35 @@
+Summary
+  Generated on: 2/23/2026 - 10:13:20 PM
+  Coverage date: 2/23/2026 - 10:12:14 PM - 2/23/2026 - 10:12:15 PM
+  Parser: MultiReport (3x Cobertura)
+  Assemblies: 2
+  Classes: 11
+  Files: 11
+  Line coverage: 87.1%
+  Covered lines: 143
+  Uncovered lines: 21
+  Coverable lines: 164
+  Total lines: 281
+  Branch coverage: 75% (24 of 32)
+  Covered branches: 24
+  Total branches: 32
+  Method coverage: 86.3% (57 of 66)
+  Full method coverage: 80.3% (53 of 66)
+  Covered methods: 57
+  Fully covered methods: 53
+  Total methods: 66
+
+ImmoPilot.Application                                   86.2%
+  ImmoPilot.Application.Options.DscrThresholdOptions     100%
+  ImmoPilot.Application.Options.MarketOptions            100%
+  ImmoPilot.Application.Options.PipelineOptions          100%
+  ImmoPilot.Application.Services.PipelineOrchestrator   83.5%
+
+ImmoPilot.Domain                                        88.3%
+  ImmoPilot.Domain.Common.Result<T>                      100%
+  ImmoPilot.Domain.Entities.DscrResult                   100%
+  ImmoPilot.Domain.Entities.FmrData                     66.6%
+  ImmoPilot.Domain.Entities.Property                    94.4%
+  ImmoPilot.Domain.Services.PropertyAnalyzer             100%
+  ImmoPilot.Domain.ValueObjects.DscrThresholds           100%
+  ImmoPilot.Domain.ValueObjects.MarketConfig              25%

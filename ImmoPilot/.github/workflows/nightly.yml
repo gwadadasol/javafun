@@ -1,0 +1,57 @@
+name: Nightly Pipeline
+
+on:
+  schedule:
+    - cron: '0 4 * * *'   # 04:00 UTC daily
+  workflow_dispatch:        # allow manual trigger
+
+jobs:
+  run-pipeline:
+    name: Run ImmoPilot Pipeline
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore ImmoPilot.sln
+
+      - name: Build
+        run: dotnet build ImmoPilot.sln --no-restore --configuration Release
+
+      - name: Run tests
+        run: dotnet test ImmoPilot.sln --no-build --configuration Release --verbosity normal
+
+      - name: Run pipeline
+        working-directory: src/ImmoPilot.Console
+        env:
+          ConnectionStrings__ImmoPilot: ${{ secrets.AZURE_SQL_CONNECTION_STRING }}
+          Pipeline__DryRun: "false"
+          Pipeline__RunIdPrefix: "Nightly"
+          Market__ZipCodes__0: ${{ secrets.MARKET_ZIP_0 }}
+          Market__ZipCodes__1: ${{ secrets.MARKET_ZIP_1 }}
+          Market__ZipCodes__2: ${{ secrets.MARKET_ZIP_2 }}
+          Market__City: ${{ secrets.MARKET_CITY }}
+          Market__State: ${{ secrets.MARKET_STATE }}
+          Notification__TwilioAccountSid: ${{ secrets.TWILIO_ACCOUNT_SID }}
+          Notification__TwilioAuthToken: ${{ secrets.TWILIO_AUTH_TOKEN }}
+          Notification__FromWhatsApp: ${{ secrets.TWILIO_FROM_WHATSAPP }}
+          Notification__ToWhatsApp: ${{ secrets.WHATSAPP_RECIPIENT }}
+          Api__HudApiKey: ${{ secrets.HUD_API_KEY }}
+        run: |
+          dotnet run --no-build --configuration Release
+          EXIT_CODE=$?
+          if [ $EXIT_CODE -eq 0 ]; then
+            echo "Pipeline completed successfully"
+          elif [ $EXIT_CODE -eq 1 ]; then
+            echo "Pipeline completed with partial success"
+          else
+            echo "Pipeline failed with exit code $EXIT_CODE"
+            exit $EXIT_CODE
+          fi
